@@ -5,7 +5,7 @@ class Suggestion(models.Model):
     title = models.CharField(max_length=1024)
     desc = models.TextField(max_length=4096)
     date = models.DateField(auto_now_add=True)
-    owner = models.ForeignKey('auth.User', default=None, related_name='suggestions', on_delete=models.DO_NOTHING)
+    username = models.CharField(max_length=1024, default="Anonimo")
     is_implemented = models.BooleanField(default=False)
     cat = models.ForeignKey('box.Category', default=None, related_name='suggestions', on_delete=models.DO_NOTHING)
 
@@ -29,4 +29,4 @@ class Vote(models.Model):
     suggestion = models.ForeignKey(Suggestion, default=None, related_name='votes', on_delete=models.DO_NOTHING)
 
     def __str__(self):
-            return self.owner.username + " liked " + str(self.suggestion.id) + " - " + self.suggestion.title
+            return self.username + " liked " + str(self.suggestion.id) + " - " + self.suggestion.title
