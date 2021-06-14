@@ -1,5 +1,5 @@
 {% load poll_extras %}
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,12 +9,15 @@
     <title>Showcase</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'box/css/mvn_box.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Staatliches">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin Sans">
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="card my-2">  
+    <div class="container-fluid main-bg">
+        <div class="card my-2 title-card">  
             <div class="card-header text-center">
-                <p class="h1">Caja de sugerencias</p>
+                <p class="h1 title-text">CAJA DE SUGERENCIAS</p>
             </div>
         </div>
         
@@ -22,21 +25,18 @@
             <div class="card my-1">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col">
                             <a class="btn btn-link btn-block text-left" data-toggle="collapse" href="#datosCat{{cat.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                <div class="h4">{{cat.title}}</div>
+                                <div class="h4">{{cat.title}}
+                                    <i class="fas fa-caret-square-down float-right"></i>
+                                </div>                                
+                                
                             </a>                        
                             <div class="ml-4">
-                                <em>Total: {{cat.suggestions.all.count}}</em>
-                            </div>         
-                        </div>
-                        
-                        <div class="col">
-                            <div class="float-right">
                                 <em>En espera: {{cat|pending_suggestions}}</em> &nbsp;&nbsp;&nbsp;
                                 <em>Realizadas: {{cat|implemented_suggestions}}</em>                         
                             </div>
-                        </div>                    
+                        </div>         
                     </div>                    
                 </div>
 
@@ -51,24 +51,42 @@
 
                     {% for sug in cat.suggestions.all %}
                         <div class="card my-1 mx-3" >
-                            <div class="card-header">
-                                <div>
-                                    <a class="btn btn-link btn-block text-left" data-toggle="collapse" 
-                                    href="#datosSug{{sug.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">                                             
-                                        {{sug.title}}
-                                        {% if sug.is_implemented %} <i class="fas fa-check-circle"></i> &nbsp; {% endif %}  
-                                    </a>
-                                    <i class="fa-solid fa-square-caret-down float-right"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <a>Propuesta por {{sug.owner.username}}</a>    
-                                    <div class="float-right">                                                          
-                                        <i class="far fa-heart"> {{sug.votes.count}}</i>
+                            {% if sug.is_implemented %}
+                                <div class="card-header implemented-sug">
+                                    <div>
+                                        <a class="btn btn-link btn-block text-left sug-title" data-toggle="collapse" 
+                                        href="#datosSug{{sug.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">                                             
+                                            {{sug.title}}
+                                            <i class="fas fa-check-circle"></i> &nbsp;
+                                            <i class="fas fa-caret-square-down float-right"></i>
+                                        </a>
                                     </div>
-                                </div>                                                                        
-                            </div>
+                                    <div class="ml-4">
+                                        <a>Propuesta por {{sug.owner.username}}</a>    
+                                        <div class="float-right">                                                          
+                                            <i class="far fa-heart"> {{sug.votes.count}}</i>
+                                        </div>
+                                    </div>                                                                        
+                                </div>
+                            {% else %}
+                                <div class="card-header pending-sug">
+                                    <div>
+                                        <a class="btn btn-link btn-block text-left sug-title" data-toggle="collapse" 
+                                        href="#datosSug{{sug.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">                                             
+                                            {{sug.title}}
+                                            <i class="fas fa-caret-square-down float-right"></i>
+                                        </a>
+                                    </div>
+                                    <div class="ml-4">
+                                        <a>Propuesta por {{sug.owner.username}}</a>    
+                                        <div class="float-right">                                                          
+                                            <i class="far fa-heart"> {{sug.votes.count}}</i>
+                                        </div>
+                                    </div>                                                                        
+                                </div>
+                            {% endif %}
                             <div class="collapse" id="datosSug{{sug.id}}">
-                                <div class="card-body">
+                                <div class="card-body ml-4">
                                     <p>{{sug.desc}}</p>
                                 </div>
                             </div>
