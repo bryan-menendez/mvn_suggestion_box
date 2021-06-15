@@ -3,5 +3,7 @@ from django.conf.urls import include
 from . import views
 
 urlpatterns = [
-    path('', views.index)
+    path('', views.index),
+    path('sug/add', views.SuggestionCreate.as_view()),
+
 ]

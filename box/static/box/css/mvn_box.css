@@ -32,6 +32,14 @@ a, p {
     color: #2666ab;
 }
 
-.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
-    background-color: #acbac3 !important;
+.btn-primary, .btn-primary:active, .btn-primary:visited {
+    background-color: #405F74 !important;
+}
+
+.btn-primary:hover{
+    background-color: #638ba5 !important;
+}
+
+.btn-primary:disabled{
+    background-color: #30383d !important;
 }

@@ -3,7 +3,7 @@ from django.db import models
 
 class Suggestion(models.Model):
     title = models.CharField(max_length=1024)
-    desc = models.TextField(max_length=4096)
+    desc = models.TextField(max_length=4096, default="Sin descripcion")
     date = models.DateField(auto_now_add=True)
     username = models.CharField(max_length=1024, default="Anonimo")
     is_implemented = models.BooleanField(default=False)
