@@ -5,7 +5,7 @@ class Suggestion(models.Model):
     title = models.CharField(max_length=1024)
     desc = models.TextField(max_length=4096, default="Sin descripcion")
     date = models.DateField(auto_now_add=True)
-    username = models.CharField(max_length=1024, default="Anonimo")
+    username = models.CharField(max_length=1024, default="Anonimo", null=True)
     is_implemented = models.BooleanField(default=False)
     cat = models.ForeignKey('box.Category', default=None, related_name='suggestions', on_delete=models.DO_NOTHING)
 

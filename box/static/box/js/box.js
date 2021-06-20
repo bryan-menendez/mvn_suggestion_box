@@ -1,37 +1,55 @@
 const csrftoken = getCookie('csrftoken');
 
 // NEW SUGGESTION
-$('.formSugAdd').on('click', '.btnSugAdd', function (event){    
+$('.formSugAdd').on('click', '.btnSugAdd', function (event) {
     event.preventDefault();
 
     let cat_id = $(this).data("id");
-    $('#addSugCat' + cat_id).find('#btnSugAdd').prop('disabled', true);    
-    $('#addSugCat' + cat_id).find(".errorMsg").html("");
+    let sug_block = $('#addSugCat' + cat_id) //current sug box submit block
 
-    var form = $('#addSugCat' + cat_id).find('.formSugAdd');
+    sug_block.find('.btnSugAdd').prop('disabled', true);
+    sug_block.find(".errorMsg").html("");
 
-    $.ajax({
-        type: "POST",
-        headers: {"X-CSRFToken": csrftoken},
-        url: "/sug/add",
+    var form = sug_block.find('.formSugAdd');
+
+    fetch('/sug/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            "X-CSRFToken": csrftoken,
+        },
         data: form.serialize(),
-        dataType: "json",
-        success: function (data) 
-        {
-            console.log(data);
-            $('#addSugCat' + cat_id).find("#boxSugTitle").val("");
-            $('#addSugCat' + cat_id).find("#boxSugDesc").val("");                
+    })
+    .then(response => {
+        //console.log("response from adding new suggestion");
+        //console.log(response);
+
+        if (!response.ok){
+            //console.log("THERE WAS AN AERRORR")
+            let err = () => { listErrors(response)};
+            console.log(err)
+            sug_block.find(".errors").html(err);
+            sug_block.find(".errors").innerHTML = err
+        }
+        else{
+            sug_block.find("#boxSugTitle").val("");
+            sug_block.find("#boxSugDesc").val("");
             listSug(cat_id);
         }
-    }).catch(err => {
-        $('#formSugAdd').find(".errorMsg").html(listErrors(err));
-    }).always(function(){
-        $('#btnSugAdd').prop('disabled', false); 
+
+        return response;
+    })
+    .then(response => {
+        sug_block.find('.btnSugAdd').prop('disabled', false);
     });
 });
 
+function listSug(id){
+
+}
+
 // AJAX Insertar comentario
-$('#btnCmtAdd').click(function(event){
+$('#btnCmtAdd').click(function (event) {
     event.preventDefault();
     $('#btnCmtAdd').prop('disabled', true);
     $('#formCmtAdd').find(".errorMsg").html("");
@@ -41,21 +59,19 @@ $('#btnCmtAdd').click(function(event){
     var route = routeForoCmtAdd;
     $.ajax({
         type: "post",
-        headers: {"X-CSRF-TOKEN":token},
+        headers: { "X-CSRF-TOKEN": token },
         url: route,
         data: form.serialize(),
         dataType: "json",
-        success: function (data) 
-        {
-            if(data.success == 'true')
-            {
+        success: function (data) {
+            if (data.success == 'true') {
                 $("#boxCmt").val("");
                 listCmt();
             }
         }
     }).catch(err => {
         $('#formAddCmt').find(".errorMsg").html(listErrors(err));
-    }).always(function(){
+    }).always(function () {
         $('#btnCmtAdd').prop('disabled', false);
     });
 });
@@ -76,27 +92,30 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function listErrors(err)
-{
+listErrors = async (resp) => {
     let html = '';
     let errors = {};
 
-    if (err.status == "413")
+    if (resp.status == "413")
         html += "<li>" + "El tamaño del archivo es demasiado grande" + "</li>";
-    
-    if (err.responseJSON != null)
-    {    
-        errors = err.responseJSON.errors;
 
-        if (err.responseJSON.customError)
-            html += "<li>" + err.responseJSON.customError + "</li>";
-    }
-    
-    $.each(errors, function(k,v){ 
-        $.each( v, function( i, e ){
-            html += "<li>" + e + "</li>";
+    //console.log("obj : ");
+    await resp.json().then(json => {
+        console.log(json.errors);
+        errors = json.errors;
+
+        return json
+    }).then(json => {
+        $.each(errors, function (k, v) {
+            $.each(v, function (i, e) {
+                html += "<li>" + k + ": "+ e + "</li>";
+            });
         });
-    });
 
+        return html;
+    })
+
+    // console.log("shit to return");
+    // console.log(html);
     return html;
 }

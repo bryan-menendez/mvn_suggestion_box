@@ -109,23 +109,27 @@
                                 <div class="card-body">
                                     <form class="formSugAdd" method="POST">
                                         <div class="panel-body">
-                                            <div class="form-group">
-                                                <input type="hidden" name="cat" value="{{ cat.id }}">
-                                                <label for="boxSugName">Nombre:</label>
-                                                <textarea id="boxSugName" name="username" class="form-control"
-                                                    placeholder="Anonimo"
-                                                    autocomplete="" rows="1"></textarea>
-                                                <label for="boxSugTitle">Titulo:</label>
-                                                <textarea id="boxSugTitle" name="title" class="form-control"
-                                                    placeholder="Agrega un titulo"
-                                                    autocomplete="" rows="1" required></textarea>
-                                                <label for="boxSugDesc">Descripcion:</label>                                              
-                                                <textarea id="boxSugDesc" name="desc" class="form-control"
-                                                    placeholder="Agrega una descripcion de la propuesta"
-                                                    autocomplete="" rows="4"></textarea>
-                                                <ul class="errorMsg mt-3"></ul>
-                                                <button type="submit" data-id="{{ cat.id }}" class="btn btn-primary float-right btnSugAdd">Enviar</button>
-                                            </div>
+                                            <input type="hidden" name="cat" value="{{ cat.id }}">
+                                            <label for="boxSugName">Nombre:</label>
+                                            <textarea id="boxSugName" name="username" class="form-control"
+                                                placeholder="Anonimo"
+                                                autocomplete="" rows="1"></textarea>
+                                            <label for="boxSugTitle">Titulo:</label>
+                                            <textarea id="boxSugTitle" name="title" class="form-control"
+                                                placeholder="Agrega un titulo"
+                                                autocomplete="" rows="1" required></textarea>
+                                            <label for="boxSugDesc">Descripcion:</label>                                              
+                                            <textarea id="boxSugDesc" name="desc" class="form-control"
+                                                placeholder="Agrega una descripcion de la propuesta"
+                                                autocomplete="" rows="4"></textarea>                                                 
+                                            <div class="row">
+                                                <div class="col">
+                                                    <ul class="errors"></ul>
+                                                </div>
+                                                <div class="col">
+                                                    <button type="submit" data-id="{{ cat.id }}" class="btn btn-primary float-right my-2 btnSugAdd">Enviar</button>
+                                                </div>
+                                            </div>  
                                         </div>
                                     </form>
                                 </div>
