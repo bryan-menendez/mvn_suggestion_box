@@ -32,6 +32,9 @@ class SuggestionCreate(APIView):
             if username is None or username == "":
                 username = "Anonimo"
 
+            if desc is None or desc == "":
+                desc = "Sin descripcion"
+
             sug = Suggestion(cat=cat, title=title, username=username, desc=desc)
             sug.save()
 

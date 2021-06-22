@@ -1,4 +1,5 @@
 const csrftoken = getCookie('csrftoken');
+console.log(csrftoken);
 
 // NEW SUGGESTION
 $('.formSugAdd').on('click', '.btnSugAdd', function (event) {
@@ -8,45 +9,56 @@ $('.formSugAdd').on('click', '.btnSugAdd', function (event) {
     let sug_block = $('#addSugCat' + cat_id) //current sug box submit block
 
     sug_block.find('.btnSugAdd').prop('disabled', true);
-    sug_block.find(".errorMsg").html("");
+    sug_block.find(".errors").html("");
 
     var form = sug_block.find('.formSugAdd');
 
-    fetch('/sug/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            "X-CSRFToken": csrftoken,
-        },
-        data: form.serialize(),
-    })
-    .then(response => {
-        //console.log("response from adding new suggestion");
-        //console.log(response);
-
-        if (!response.ok){
-            //console.log("THERE WAS AN AERRORR")
-            let err = () => { listErrors(response)};
-            console.log(err)
-            sug_block.find(".errors").html(err);
-            sug_block.find(".errors").innerHTML = err
-        }
-        else{
-            sug_block.find("#boxSugTitle").val("");
-            sug_block.find("#boxSugDesc").val("");
-            listSug(cat_id);
-        }
-
-        return response;
-    })
-    .then(response => {
+    $.ajax({
+        method: "POST",
+        headers: {"X-CSRFToken": csrftoken},
+        url: "/sug/add",
+        data: form.serialize()
+    }).done(function() {
+        console.log("SAODHAJOSDASDAJDS");
+        sug_block.find("#boxSugTitle").val("");
+        sug_block.find("#boxSugDesc").val("");
+        
+        location.href = ("#datosCat"+cat_id)
+        location.reload();
+    }).catch(response => {
+        let err = listErrors(response);
+        sug_block.find(".errors").html(err);
+        sug_block.find(".errors").innerHTML = err
+    }).always(function(){
         sug_block.find('.btnSugAdd').prop('disabled', false);
     });
 });
 
-function listSug(id){
+listErrors = (resp) => {
+    let html = '';
+    let errors = {};
 
+    if (resp.status == "413")
+        html += "<li>" + "El tamaño del archivo es demasiado grande" + "</li>";
+
+    if (resp.responseJSON != null)
+    {
+        errors = resp.responseJSON.errors;
+
+        if (resp.responseJSON.customError)
+            html += "<li>" + resp.responseJSON.customError + "</li>";
+    }
+
+    $.each(errors, function (k, v) {
+        $.each(v, function (i, e) {
+            html += "<li>" + k + ": "+ e + "</li>";
+        });
+    });
+
+    return html;
 }
+
+
 
 // AJAX Insertar comentario
 $('#btnCmtAdd').click(function (event) {
@@ -92,30 +104,3 @@ function getCookie(name) {
     return cookieValue;
 }
 
-listErrors = async (resp) => {
-    let html = '';
-    let errors = {};
-
-    if (resp.status == "413")
-        html += "<li>" + "El tamaño del archivo es demasiado grande" + "</li>";
-
-    //console.log("obj : ");
-    await resp.json().then(json => {
-        console.log(json.errors);
-        errors = json.errors;
-
-        return json
-    }).then(json => {
-        $.each(errors, function (k, v) {
-            $.each(v, function (i, e) {
-                html += "<li>" + k + ": "+ e + "</li>";
-            });
-        });
-
-        return html;
-    })
-
-    // console.log("shit to return");
-    // console.log(html);
-    return html;
-}
